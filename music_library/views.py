@@ -33,9 +33,3 @@ def single_song(request, pk):
     elif request.method=='DELETE':
         query_set.delete()
         return Response(status=status.HTTP_200_OK)
-    elif request.method=='PATCH':
-        if request.data['likes'] == True:
-           query_set.likes += 1
-           query_set.save()
-           serializer = SongSerializer(query_set)
-           return Response(serializer.data, status=status.HTTP_200_OK)
