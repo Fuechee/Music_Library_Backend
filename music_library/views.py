@@ -18,3 +18,24 @@ def songs(request):
         serailizer.is_valid(raise_exception=True)
         serailizer.save()
         return Response(serailizer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT','DELETE','PATCH'])
+def single_song(request, pk):
+    query_set = get_object_or_404(Song, pk=pk)
+    if request.method == 'GET':
+        serializer = SongSerializer(query_set)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'PUT':
+        serializer= SongSerializer(query_set, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method=='DELETE':
+        query_set.delete()
+        return Response(status=status.HTTP_200_OK)
+    elif request.method=='PATCH':
+        if request.data['likes'] == True:
+           query_set.likes += 1
+           query_set.save()
+           serializer = SongSerializer(query_set)
+           return Response(serializer.data, status=status.HTTP_200_OK)
